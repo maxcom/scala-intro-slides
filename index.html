@@ -279,6 +279,37 @@ val count: Future[Int] = for {
 
 				<section>
 					<h2>Implicit контекст</h2>
+					<p>В каком треде будут работать трансформации Future?</p>
+					<div class="fragment">
+					<pre><code class="scala">
+def map[S](f: (T) ⇒ S)
+          (implicit executor: ExecutionContext): Future[S] 
+					</code></pre>
+					<p><strong>executor</strong> - неявный параметр
+					</div>
+				</section>
+
+				<section>
+					<p>Значения implicit параметров ищуются в</p>
+					<ul>
+						<li>локальных объявлениях</li>
+						<li>imports</li>
+						<li>в объектах-компаньонах ассоциированных типов</li>
+					</ul>
+				</section>
+
+				<section>
+					<p>Неявные параметры применяют например для передачи</p>
+					<ul>
+						<li>контекста транзакции БД</li>
+						<li>контекста запроса в контроллерах веб-запросов</li>
+						<li>языка для локализации результатов вычисления</li>
+						<li>конфигурации</li>
+					</ul>
+					<p class="fragment">
+					В Java-мире многие эти вещи передаются при помощи runtime "магии" в
+					фреймворках вроде Spring.
+					</p>
 				</section>
 
 				<section>
