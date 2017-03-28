@@ -221,7 +221,6 @@ userByEmail("user1@test")
   .filter(userActive)
   .flatMap(ticketsByUser)
   .map(_.length)
-  .getOrElse(0)
 					</code></pre>					
 				</section>
 
