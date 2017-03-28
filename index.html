@@ -239,7 +239,6 @@ for {
 
 				<section>
 					<h2>Future</h2>
-					<p>А теперь немного асинхронного программирования</p>
 					<p>Future тоже поддерживает трансформации map и flatMap</p>
 					<pre><code class="scala">
 def userByEmail(email: String): Future[Int] = ???
@@ -255,6 +254,7 @@ val count: Future[Int] =
     .map(_.length)
 
 					</code></pre>
+					<small>* даже такой код сильно лучше, чем callback-hell</small>
 				</section>
 
 				<section>
@@ -328,7 +328,7 @@ def map[S](f: (T) ⇒ S)
 				</section>
 
 				<section>
-					<p>Решение: "typeclass"</p>
+					<p>Решение:</p>
 					<pre><code class="scala">
 trait Writes[A] {
   def writes(o: A): JsValue
