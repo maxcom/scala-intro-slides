@@ -314,6 +314,54 @@ def map[S](f: (T) ⇒ S)
 
 				<section>
 					<h2>Сериализация на implicit'ах</h2>
+					<p>Допустим мы хотим сделать свою custom сериализацию, например в JSON.</p>
+				</section>
+
+				<section>
+					<p>Варианты:</p>
+					<ul>
+						<li>Runtime сериализация через reflection - медленно работает, Exception или "ерунда" на выходе
+						    если передать что-то "не то".</li>
+						<li class="fragment">Свой интерфейс JsonSerializable - быстро работает, но много boilerplate. Необходимо писать обертки
+						    вокруг стандартных и "чужих" типов данных.
+					</ul>
+				</section>
+
+				<section>
+					<p>Решение: "typeclass"</p>
+					<pre><code class="scala">
+trait Writes[A] {
+  def writes(o: A): JsValue
+}
+
+def toJson[T](o: T)(implicit tjs: Writes[T]): JsValue = 
+  tjs.writes(o)					
+					</code></pre>
+				</section>
+
+				<section>
+					<p>Writes можно создать для любого типа, в том числе стандартного и "чужого"</p>
+					<pre><code class="scala">
+  implicit object StringWrites extends Writes[String] {
+    def writes(o: String) = JsString(o)
+  }
+					</code></pre>
+				
+					<div class="fragment">
+					<p>Для коллекций</p>
+					<pre><code class="scala">
+implicit def SeqWrt[T](implicit w: Writes[T]): Writes[Seq[T]] = 
+  new Writes[Seq[T]] {
+    override def writes(o: Seq[T]) = JsArray(o.map(w.writes))
+  }
+					</code></pre>
+					<p>поиск рекурсивный!</p>
+					</div>
+				</section>
+
+				<section>
+					<p>В стандартных библиотеках сериализации обычно есть готовый 
+					макрос для сериализации case-классов.
 				</section>
 
 				<section>
