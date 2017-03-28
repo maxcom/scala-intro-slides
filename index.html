@@ -134,6 +134,8 @@ object Address {
     Some((address.`type`, address.value))
 }
 					</code></pre>
+					<small>* объект-компаньон, заменяет static декларации Java</small>
+					<small>* для case классов apply/unapply создаются автоматически</small>
 				</section>
 
 				<section>
@@ -156,11 +158,11 @@ case class Domain(domain: String) extends Endpoint
 val endpoint: Endpoint = ExactAddress(address)
 
 endpoint match {
-  case Person(personId)   ⇒ 
+  case Person(personId) ⇒ 
     Json.obj("type" -> "person", "id" -> personId)
-  case Group(groupId)     ⇒ 
+  case Group(groupId) ⇒ 
     Json.obj("type" -> "group", "id" -> groupId)
-  case Domain(domain)     ⇒ 
+  case Domain(domain) ⇒ 
     Json.obj("type" -> "domain", "id" -> domain)
   case ExactAddress(addr) ⇒ 
     Json.obj("type" -> addr.`type`, "id" -> addr.value)
@@ -194,6 +196,7 @@ list match {
   case one +: _ ⇒ s"at least one element $one"  
 }
 					</code></pre>
+					<small>* +: это оператор для списка и еще специальный объект с методом unapply</small>
 				</section>
 
 				<section>
@@ -205,7 +208,6 @@ list match {
 				</section>
 
 				<section>
-					<h2>Future и его транформации</h2>
 					<pre><code class="scala">
 def userByEmail(email: String): Option[Int] = 
   Map("user1@test" -> 1, "user2" -> 2).get(email)
@@ -224,7 +226,6 @@ userByEmail("user1@test")
 				</section>
 
 				<section>
-					<h2>For: пример для Option</h2>
 					Но лучше так:
 					<pre><code class="scala">
 for {
@@ -274,7 +275,7 @@ val count: Future[Int] = for {
 }
 
 					</code></pre>
-
+					<small>for применим к большому количеству интересных типов данных!</small>
 				</section>
 
 				<section>
@@ -334,8 +335,10 @@ trait Writes[A] {
   def writes(o: A): JsValue
 }
 
-def toJson[T](o: T)(implicit tjs: Writes[T]): JsValue = 
-  tjs.writes(o)					
+object Json {
+  def toJson[T](o: T)(implicit tjs: Writes[T]): JsValue = 
+    tjs.writes(o)					
+}
 					</code></pre>
 				</section>
 
@@ -343,7 +346,7 @@ def toJson[T](o: T)(implicit tjs: Writes[T]): JsValue =
 					<p>Writes можно создать для любого типа, в том числе стандартного и "чужого"</p>
 					<pre><code class="scala">
   implicit object StringWrites extends Writes[String] {
-    def writes(o: String) = JsString(o)
+    override def writes(o: String) = JsString(o)
   }
 					</code></pre>
 				
