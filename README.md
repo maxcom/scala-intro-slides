@@ -1,4 +1,4 @@
-# akka-intro-slides
-Слайды к рассказу про Akka
+# scala-intro-slides
+Слайды к рассказу про Scala
 
-https://maxcom.github.io/akka-intro-slides/
+https://maxcom.github.io/scala-intro-slides/
