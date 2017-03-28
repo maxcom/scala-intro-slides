@@ -39,20 +39,102 @@
 			<div class="slides">
 				<section>
 					<h1>Scala</h1>
-                                        <h3>Акторы для JVM</h3>
-					<p>Язык программирования для JVM</p>
+					<h3>Язык программирования для JVM</h3>
 					<p><small>Слайды: <a href="http://maxcom.github.io/scala-intro-slides/">http://maxcom.github.io/scala-intro-slides/</a></small></p>
 				</section>
 
 				<section>
-					<h2>План</h2>
-                                        <ol>
-                                          <li></li>
-					</ol>
+					<h2>Введение</h2>
+					<p><strong>Scala</strong> — мультипарадигмальный язык программирования, спроектированный кратким и типобезопасным для простого и быстрого создания компонентного программного обеспечения, сочетающий возможности функционального и объектно-ориентированного программирования.</p>
+					<img src="Wikipedia-logo-v2.svg">
+					<p class="fragment">+ хороший interop с существующим Java кодом</p>
 				</section>
 
 				<section>
-					<h2></h2>
+					<p>обо всём языке говорить долго</p>
+					<img src="korabli1.jpg">
+				</section>
+
+				<section>
+					<p>хотя есть что расказать</p>
+					<img src="korabli2.jpg">
+				</section>
+
+				<section>
+					<p>вместо этого я покажу избранные возможности</p>
+					<p class="fragment">будет много простого и понятного кода</p>
+				</section>
+
+				<section>
+					<p>например</p>
+					<pre>
+					<code>
+/** Variant of `foldRun` that allows to interleave 
+    effect `M` at each step. */
+  final def foldRunM[M[_], B](b: B)
+   (f: λ[α => (B, S[α])] ~> λ[α => M[(B, α)]])
+   (implicit M0: Applicative[M], M1: BindRec[M]): M[(B, A)] =
+    M1.tailrecM((b, this)) { case (b, fa) =>
+      fa.step match {
+        case Return(a) => M0.point(\/-((b, a)))
+        case Suspend(sa) => M0.map(f((b, sa)))(\/.right)
+        case g @ Gosub(_, _) => g.a match {
+          case Suspend(sz) =>
+            M0.map(f((b, sz))) { case (b, z) => -\/((b, g.f(z))) }
+          case _ => sys.error("Unreachable code: `Gosub` returned from `step` must have `Suspend` on the left")
+        }
+      }
+}
+					</code>
+					</pre>
+				</section>
+
+				<section>
+					<img src="испуганный-кот.jpg">
+				</section>
+
+				<section>
+					<h2>Case-классы</h2>
+				</section>
+
+				<section>
+					<h2>Экстракторы</h2>
+				</section>
+
+				<section>
+					<h2>ADT</h2>
+				</section>
+
+				<section>
+					<h2>Pattern matching для ADT</h2>
+				</section>
+
+				<section>
+					<h2>Pattern matching для списков</h2>
+				</section>
+
+				<section>
+					<h2>Option и его трансформации</h2>
+				</section>
+
+				<section>
+					<h2>Future и его транформации</h2>
+				</section>
+
+				<section>
+					<h2>For: пример для Option</h2>
+				</section>
+
+				<section>
+					<h2>For: пример для Future</h2>
+				</section>
+
+				<section>
+					<h2>Implicit контекст</h2>
+				</section>
+
+				<section>
+					<h2>Сериализация на implicit'ах</h2>
 				</section>
 
 				<section>
