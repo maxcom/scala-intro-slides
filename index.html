@@ -198,18 +198,83 @@ list match {
 
 				<section>
 					<h2>Option и его трансформации</h2>
+					<p>Option[T] - аналог java.util.Optional&lt;T&gt;</p>
+					<p class="fragment">Но тоже ADT: имеет подтипы None и Some[T]</p>
+					<p class="fragment">Можно разбирать его через pattern matching, но
+					удобнее использовать трансформации: map, flatMap и filter</p>
 				</section>
 
 				<section>
 					<h2>Future и его транформации</h2>
+					<pre><code class="scala">
+def userByEmail(email: String): Option[Int] = 
+  Map("user1@test" -> 1, "user2" -> 2).get(email)
+
+def userActive(user: Int): Boolean = Set(1, 42).contains(user)
+
+def ticketsByUser(user: Int): Option[Seq[Int]] = 
+  Map(1 -> Seq(20, 32, 35)).get(user)
+
+userByEmail("user1@test")
+  .filter(userActive)
+  .flatMap(ticketsByUser)
+  .map(_.length)
+  .getOrElse(0)
+					</code></pre>					
 				</section>
 
 				<section>
 					<h2>For: пример для Option</h2>
+					Но лучше так:
+					<pre><code class="scala">
+for {
+  user <- userByEmail("user1@test") if userActive(user)
+  tickets <- ticketsByUser(user)
+} yield {
+  tickets.length
+}
+					</code></pre>
+					<small>* for все еще работает для коллекций!</small>
+				</section>
+
+				<section>
+					<h2>Future</h2>
+					<p>А теперь немного асинхронного программирования</p>
+					<p>Future тоже поддерживает трансформации map и flatMap</p>
+					<pre><code class="scala">
+def userByEmail(email: String): Future[Int] = ???
+
+def ticketsByUser(user: Int): Future[Seq[Int]] = ???
+
+def userActive(user: Int): Boolean = Set(1, 42).contains(user)
+
+val count: Future[Int] = 
+  userByEmail("user1@test")
+    .filter(userActive)
+    .flatMap(ticketsByUser)
+    .map(_.length)
+
+					</code></pre>
 				</section>
 
 				<section>
 					<h2>For: пример для Future</h2>
+					<pre><code class="scala">
+def userByEmail(email: String): Future[Int] = ???
+
+def ticketsByUser(user: Int): Future[Seq[Int]] = ???
+
+def userActive(user: Int): Boolean = Set(1, 42).contains(user)
+
+val count: Future[Int] = for {
+  user <- userByEmail("user1@test") if userActive(user)
+  tickets <- ticketsByUser(user)
+} yield {
+  tickets.length
+}
+
+					</code></pre>
+
 				</section>
 
 				<section>
